@@ -1,0 +1,131 @@
+use std::fmt::format;
+
+use sdl2::{
+    pixels::Color,
+    rect::Rect,
+    render::{Canvas, Texture, TextureCreator, TextureQuery},
+    ttf::{Font, Sdl2TtfContext},
+    video::{Window, WindowContext},
+};
+
+pub struct TextRender<'a> {
+    text: String,
+    ttf_context: &'a Sdl2TtfContext,
+    texture_creator: &'a TextureCreator<WindowContext>,
+    font: Font<'a, 'a>,
+    texture: Texture<'a>,
+    width: u32,
+    height: u32,
+    size: u16,
+    font_path: &'a str,
+    color: Color,
+}
+
+impl<'a> TextRender<'a> {
+    fn get_default_font(ttf_context: &'a Sdl2TtfContext) -> Result<Font<'a, 'a>, String> {
+        ttf_context.load_font("/usr/share/fonts/truetype/lato/Lato-Regular.ttf", 128)
+    }
+
+    fn get_default_texture(
+        ttf_context: &'a Sdl2TtfContext,
+        texture_creator: &'a TextureCreator<WindowContext>,
+    ) -> Result<Texture<'a>, String> {
+        let font = TextRender::get_default_font(ttf_context)?;
+
+        let surface = font
+            .render("Dummy")
+            .blended(Color::RGB(255, 255, 255))
+            .map_err(|e| e.to_string())?;
+        let texture = texture_creator
+            .create_texture_from_surface(&surface)
+            .map_err(|e| e.to_string())?;
+
+        Ok(texture)
+    }
+
+    pub fn new(
+        ttf_context: &'a Sdl2TtfContext,
+        texture_creator: &'a TextureCreator<WindowContext>,
+    ) -> Result<Self, String> {
+        let font = TextRender::get_default_font(ttf_context)?;
+        let texture = TextRender::get_default_texture(ttf_context, texture_creator)?;
+        let TextureQuery { width, height, .. } = texture.query();
+
+        Ok(TextRender {
+            text: String::from("Dummy"),
+            ttf_context,
+            texture_creator,
+            font,
+            texture,
+            width,
+            height,
+            size: 128,
+            font_path: "/usr/share/fonts/truetype/lato/Lato-Regular.ttf",
+            color: Color::RGB(255, 255, 255),
+        })
+    }
+
+    fn compute_texture(&mut self) -> Result<(), String> {
+        let surface = self
+            .font
+            .render(&self.text)
+            .blended(self.color)
+            .map_err(|e| e.to_string())?;
+        self.texture = self
+            .texture_creator
+            .create_texture_from_surface(&surface)
+            .map_err(|e| e.to_string())?;
+
+        let TextureQuery { width, height, .. } = self.texture.query();
+
+        self.width = width;
+        self.height = height;
+
+        Ok(())
+    }
+
+    pub fn set_text(&mut self, text: &str) -> Result<(), String> {
+        self.text.clear();
+        self.text.push_str(text);
+
+        self.compute_texture()?;
+
+        Ok(())
+    }
+
+    pub fn set_font(&mut self, path: &'a str) -> Result<(), String> {
+        self.font_path = path;
+
+        self.font = self.ttf_context.load_font(self.font_path, self.size)?;
+
+        self.compute_texture()?;
+
+        Ok(())
+    }
+
+    pub fn set_size(&mut self, size: u16) -> Result<(), String> {
+        self.size = size;
+
+        self.font = self.ttf_context.load_font(self.font_path, self.size)?;
+
+        self.compute_texture()?;
+
+        Ok(())
+    }
+
+    pub fn set_color(&mut self, color: Color) -> Result<(), String> {
+        self.color = color;
+
+        self.compute_texture()?;
+
+        Ok(())
+    }
+
+    pub fn display_at(&self, canvas: &mut Canvas<Window>, x: i32, y: i32) -> Result<(), String> {
+        canvas.copy(
+            &self.texture,
+            None,
+            Rect::new(x, y, self.width, self.height),
+        )
+    }
+}

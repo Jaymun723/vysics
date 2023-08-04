@@ -1,0 +1,73 @@
+a: RigidBody2D {
+    position: Vec2D {
+        x: 400.0,
+        y: 250.0,
+    },
+    velocity: Vec2D {
+        x: 0.0,
+        y: 0.0,
+    },
+    angle: 0.0,
+    angular_velocity: 0.0,
+    collider: CircleCollider {
+        radius: 50.0,
+    },
+    mass: 1.0,
+}
+b: RigidBody2D {
+    position: Vec2D {
+        x: 422.0,
+        y: 261.0,
+    },
+    velocity: Vec2D {
+        x: 0.0,
+        y: 0.0,
+    },
+    angle: 0.0,
+    angular_velocity: 0.0,
+    collider: PolygonCollider {
+        vertices: [
+            Vec2D {
+                x: -100.0,
+                y: -50.0,
+            },
+            Vec2D {
+                x: -100.0,
+                y: 50.0,
+            },
+            Vec2D {
+                x: 100.0,
+                y: 50.0,
+            },
+            Vec2D {
+                x: 100.0,
+                y: -50.0,
+            },
+        ],
+    },
+    mass: 1.0,
+}
+simplex: Simplex {
+    points: [
+        CSOVertex {
+            a: Vec2D {
+                x: 444.7213595499958,
+                y: 272.3606797749979,
+            },
+            b: Vec2D {
+                x: 322.0,
+                y: 211.0,
+            },
+        },
+        CSOVertex {
+            a: Vec2D {
+                x: 355.2786404500042,
+                y: 227.6393202250021,
+            },
+            b: Vec2D {
+                x: 522.0,
+                y: 311.0,
+            },
+        },
+    ],
+}
