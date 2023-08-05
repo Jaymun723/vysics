@@ -14,9 +14,11 @@ pub struct RigidBody2D {
     pub angle: f64,
     pub angular_velocity: f64,
     pub collider: Collider,
-    mass: f64,
+    // pub is temp
+    pub mass: f64,
+    // pub is temp
     #[derivative(Debug = "ignore")]
-    force_generators: Vec<Box<dyn ForceGenerator>>,
+    pub force_generators: Vec<Box<dyn ForceGenerator>>,
 }
 
 impl RigidBody2D {

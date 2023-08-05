@@ -107,7 +107,7 @@ impl Simplex {
         self.points.insert(index, point)
     }
 
-    fn handle_line_case(&mut self, dir: &mut Vec2D) -> bool {
+    fn handle_line_case(&mut self, a: &RigidBody2D, b: &RigidBody2D, dir: &mut Vec2D) -> bool {
         let point_b = self.points[0].to_vec();
         let point_a = self.points[1].to_vec();
 
@@ -116,12 +116,34 @@ impl Simplex {
 
         println!("ab: {ab}, ao: {ao}");
 
-        let ab_perp = triple_product(ab, ao, ab);
+        if (point_a.norm() + (-point_b).norm() - ab.norm()).abs() < TOLERANCE {
+            println!("Origin lies on the edge.");
+            let left_normal = Vec2D::new(ab.y, -ab.x).normalize();
+            let right_normal = Vec2D::new(-ab.y, ab.x).normalize();
+
+            let left_support = CSOVertex::get(a, b, left_normal);
+            let right_support = CSOVertex::get(a, b, right_normal);
+
+            if left_support != self.points[0] && left_support != self.points[1] {
+                self.add(left_support);
+                return true;
+            } else if right_support != self.points[0] && right_support != self.points[1] {
+                self.add(right_support);
+                return true;
+            } else {
+                panic!("Denegerate case ?");
+            }
+        }
+
+        let mut ab_perp = triple_product(ab, ao, ab);
+
+        println!("Triple product for ab_perp: {ab_perp}");
         // let ab_perp = ab.to_3d().cross(
         //     ao.to_3d()
         // ).cross(ab.to_3d()).to_2d();
         if ab_perp.near_zero() {
-            *dir = Vec2D::new(ab.y, -ab.x);
+            println!("It's near zero !");
+            ab_perp = Vec2D::new(ab.y, -ab.x).normalize();
         }
 
         println!("ab_perp: {ab_perp}");
@@ -190,9 +212,9 @@ impl Simplex {
         }
     }
 
-    pub fn handle(&mut self, dir: &mut Vec2D) -> bool {
+    pub fn handle(&mut self, a: &RigidBody2D, b: &RigidBody2D, dir: &mut Vec2D) -> bool {
         if self.points.len() == 2 {
-            self.handle_line_case(dir)
+            self.handle_line_case(a, b, dir)
         } else {
             self.handle_triangle_case(dir)
         }
@@ -281,7 +303,7 @@ pub fn gjk_collision(a: &RigidBody2D, b: &RigidBody2D) -> Option<Simplex> {
 
         // clg!("Le simplex avant handle: {:#?}", simplex);
 
-        if simplex.handle(&mut dir) {
+        if simplex.handle(a, b, &mut dir) {
             // panic!("attends un peu");
             return Some(simplex);
         }
@@ -386,5 +408,67 @@ mod tests {
         expected_result.add(CSOVertex::get(&a, &b, Vec2D::new(0.316, -0.948)));
 
         assert_eq!(gjk_collision(&a, &b), Some(expected_result))
+    }
+
+    #[test]
+    fn example_two() {
+        let a = RigidBody2D {
+            position: Vec2D { x: 400.0, y: 250.0 },
+            velocity: Vec2D { x: 0.0, y: 0.0 },
+            angle: 0.0,
+            angular_velocity: 0.0,
+            collider: crate::collider::Collider::CircleCollider { radius: 50.0 },
+            mass: 1.0,
+            force_generators: vec![],
+        };
+
+        let b = RigidBody2D {
+            position: Vec2D { x: 422.0, y: 261.0 },
+            velocity: Vec2D { x: 0.0, y: 0.0 },
+            angle: 0.0,
+            angular_velocity: 0.0,
+            collider: crate::collider::Collider::PolygonCollider {
+                vertices: vec![
+                    Vec2D {
+                        x: -100.0,
+                        y: -50.0,
+                    },
+                    Vec2D { x: -100.0, y: 50.0 },
+                    Vec2D { x: 100.0, y: 50.0 },
+                    Vec2D { x: 100.0, y: -50.0 },
+                ],
+            },
+            mass: 1.0,
+            force_generators: vec![],
+        };
+
+        assert_eq!(
+            gjk_collision(&a, &b),
+            Some(Simplex {
+                points: vec![
+                    CSOVertex {
+                        a: Vec2D {
+                            x: 444.7213595499958,
+                            y: 272.3606797749979
+                        },
+                        b: Vec2D { x: 322.0, y: 211.0 }
+                    },
+                    CSOVertex {
+                        a: Vec2D {
+                            x: 355.2786404500042,
+                            y: 227.6393202250021
+                        },
+                        b: Vec2D { x: 522.0, y: 311.0 }
+                    },
+                    CSOVertex {
+                        a: Vec2D {
+                            x: 422.3606797749979,
+                            y: 205.27864045000422
+                        },
+                        b: Vec2D { x: 322.0, y: 311.0 }
+                    }
+                ]
+            })
+        )
     }
 }

@@ -2,7 +2,7 @@ use crate::{linalg::Vec2D, rigidbody2d::RigidBody2D};
 
 use super::gjk::{triple_product, CSOVertex, Simplex};
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq)]
 pub struct CollisionResult {
     pub normal: Vec2D,
     pub depth: f64,
@@ -99,4 +99,132 @@ pub fn epa(mut simplex: Simplex, a: &RigidBody2D, b: &RigidBody2D) -> CollisionR
         "Epa runned out of iterations. \nTo reproduce: a: {:#?}\nb:{:#?}",
         a, b
     );
+}
+
+#[cfg(test)]
+mod tests {
+    use crate::{
+        collider::Collider::PolygonCollider,
+        collision::algorithms::{
+            epa::CollisionResult,
+            gjk::{self, gjk_collision},
+        },
+        linalg::Vec2D,
+        rigidbody2d::RigidBody2D,
+    };
+
+    use super::epa;
+
+    #[test]
+    fn example_one() {
+        let a = RigidBody2D {
+            position: Vec2D { x: 400.0, y: 250.0 },
+            velocity: Vec2D { x: 0.0, y: 0.0 },
+            angle: 0.0,
+            angular_velocity: 0.0,
+            collider: PolygonCollider {
+                vertices: vec![
+                    Vec2D { x: -50.0, y: -50.0 },
+                    Vec2D { x: -50.0, y: 50.0 },
+                    Vec2D { x: 50.0, y: 50.0 },
+                    Vec2D { x: 50.0, y: -50.0 },
+                ],
+            },
+            mass: 1.0,
+            force_generators: vec![],
+        };
+
+        let b = RigidBody2D {
+            position: Vec2D { x: 400.0, y: 165.0 },
+            velocity: Vec2D { x: 0.0, y: 0.0 },
+            angle: 0.0,
+            angular_velocity: 0.0,
+            collider: PolygonCollider {
+                vertices: vec![
+                    Vec2D {
+                        x: -100.0,
+                        y: -35.0,
+                    },
+                    Vec2D { x: -100.0, y: 35.0 },
+                    Vec2D { x: 100.0, y: 35.0 },
+                    Vec2D { x: 100.0, y: -35.0 },
+                ],
+            },
+            mass: 1.0,
+            force_generators: vec![],
+        };
+
+        let simplex = match gjk_collision(&a, &b) {
+            Some(s) => s,
+            None => panic!("GJK didn't get a collision."),
+        };
+
+        let result = epa(simplex, &a, &b);
+
+        assert_eq!(
+            result,
+            CollisionResult {
+                normal: Vec2D { x: 1.0, y: -0.0 },
+                depth: 150.0,
+                point_a: Vec2D { x: 350.0, y: 200.0 },
+                point_b: Vec2D { x: 500.0, y: 200.0 }
+            }
+        )
+    }
+
+    #[test]
+    fn example_two() {
+        let a = RigidBody2D {
+            position: Vec2D { x: 400.0, y: 250.0 },
+            velocity: Vec2D { x: 0.0, y: 0.0 },
+            angle: 0.0,
+            angular_velocity: 0.0,
+            collider: PolygonCollider {
+                vertices: vec![
+                    Vec2D { x: -50.0, y: -50.0 },
+                    Vec2D { x: -50.0, y: 50.0 },
+                    Vec2D { x: 50.0, y: 50.0 },
+                    Vec2D { x: 50.0, y: -50.0 },
+                ],
+            },
+            mass: 1.0,
+            force_generators: vec![],
+        };
+
+        let b = RigidBody2D {
+            position: Vec2D { x: 406.0, y: 254.0 },
+            velocity: Vec2D { x: 0.0, y: 0.0 },
+            angle: 0.0,
+            angular_velocity: 0.0,
+            collider: PolygonCollider {
+                vertices: vec![
+                    Vec2D {
+                        x: -100.0,
+                        y: -50.0,
+                    },
+                    Vec2D { x: -100.0, y: 50.0 },
+                    Vec2D { x: 100.0, y: 50.0 },
+                    Vec2D { x: 100.0, y: -50.0 },
+                ],
+            },
+            mass: 1.0,
+            force_generators: vec![],
+        };
+
+        let simplex = match gjk_collision(&a, &b) {
+            Some(s) => s,
+            None => panic!("GJK didn't get a collision."),
+        };
+
+        let result = epa(simplex, &a, &b);
+        assert_eq!(
+            result,
+            CollisionResult {
+                normal: Vec2D { x: -0.0, y: 1.0 },
+                depth: 104.0,
+                point_a: Vec2D { x: 402.0, y: 200.0 },
+                point_b: Vec2D { x: 402.0, y: 304.0 }
+            }
+        )
+    }
 }
