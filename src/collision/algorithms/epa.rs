@@ -18,11 +18,11 @@ fn closest_edge(simplex: &Simplex) -> (f64, usize, Vec2D) {
 
     for i in 0..n {
         let j = (i + 1) % n;
-        println!(
-            "Looking at edge from {i}: {} and {j}: {}",
-            simplex[i].to_vec(),
-            simplex[j].to_vec()
-        );
+        // println!(
+        //     "Looking at edge from {i}: {} and {j}: {}",
+        //     simplex[i].to_vec(),
+        //     simplex[j].to_vec()
+        // );
         let edge = simplex[j].to_vec() - simplex[i].to_vec();
 
         if !edge.is_correct() {
@@ -38,7 +38,7 @@ fn closest_edge(simplex: &Simplex) -> (f64, usize, Vec2D) {
         let normal = triple_product(edge, simplex[i].to_vec(), edge).normalize();
 
         if normal.near_zero() || !normal.is_correct() {
-            println!("Triple prodcut was bad.");
+            // clg!("Triple prodcut was bad.");
             continue;
             // normal = if simplex[i].to_vec().cross(simplex[j].to_vec()) > 0. {
             //     Vec2D::new(-edge.y, edge.x)
@@ -61,7 +61,7 @@ fn closest_edge(simplex: &Simplex) -> (f64, usize, Vec2D) {
 
         // let normal = triple_product(edge, simplex[i].to_vec(), edge).normalize();
         let dist = (normal * (simplex[i].to_vec())).abs();
-        println!("Got dist: {dist}");
+        // println!("Got dist: {dist}");
         if dist < min_dist {
             min_dist = dist;
             min_index = i;
@@ -96,10 +96,14 @@ pub fn epa(mut simplex: Simplex, a: &RigidBody2D, b: &RigidBody2D) -> CollisionR
 
     // println!("Winding: {winding}");
 
-    for _ in 0..EPA_ITERATIONS {
+    // clg!("Iteration 0:");
+    // clg!("a: {:#?}\nb: {:#?}\nsimplex: {:#?}", a, b, simplex);
+    for i in 0..EPA_ITERATIONS {
         let (depth, index, normal) = closest_edge(&simplex);
         let support = CSOVertex::get(a, b, normal);
         let r = support.to_vec();
+        // clg!("Iteration {}: adding support {}", i + 1, r);
+        // clg!("a: {:#?}\nb: {:#?}\nsimplex: {:#?}", a, b, simplex);
         if ((normal * r) - depth).abs() < 0.001 {
             let jndex = (index + 1) % simplex.len();
             let a = simplex[index].to_vec();
@@ -129,6 +133,7 @@ pub fn epa(mut simplex: Simplex, a: &RigidBody2D, b: &RigidBody2D) -> CollisionR
                 point_b = (1. - lambda) * simplex[index].b + lambda * simplex[jndex].b;
             }
 
+            // println!("concluded in {i} steps");
             return CollisionResult {
                 normal: -normal,
                 depth,
@@ -339,6 +344,70 @@ mod tests {
         )
     }
 
+    #[test]
+    pub fn example_four() {
+        let a = RigidBody2D {
+            position: Vec2D { x: 400.0, y: 250.0 },
+            velocity: Vec2D { x: 0.0, y: 0.0 },
+            angle: 0.0,
+            angular_velocity: 0.0,
+            collider: CircleCollider { radius: 80.0 },
+            mass: 1.0,
+            force_generators: vec![],
+        };
+
+        let b = RigidBody2D {
+            position: Vec2D { x: 426.0, y: 301.0 },
+            velocity: Vec2D { x: 0.0, y: 0.0 },
+            angle: 0.0,
+            angular_velocity: 0.0,
+            collider: PolygonCollider {
+                vertices: vec![
+                    Vec2D {
+                        x: -100.0,
+                        y: -50.0,
+                    },
+                    Vec2D { x: 100.0, y: -50.0 },
+                    Vec2D { x: 100.0, y: 50.0 },
+                    Vec2D { x: -100.0, y: 50.0 },
+                ],
+            },
+            mass: 1.0,
+            force_generators: vec![],
+        };
+
+        println!("===== GJK =====");
+        let simplex = match gjk_collision(&a, &b) {
+            Some(s) => s,
+            None => panic!("GJK didn't get a collision."),
+        };
+
+        println!("===== SPL =====");
+        println!("{:#?}", simplex);
+
+        // clg!("{:#?}", simplex);
+
+        println!("===== EPA =====");
+        let result = epa(simplex, &a, &b);
+        assert_eq!(
+            result,
+            CollisionResult {
+                normal: Vec2D {
+                    x: -4.736703088154728e-9,
+                    y: -1.0
+                },
+                depth: 78.99999910497503,
+                point_a: Vec2D {
+                    x: 400.0063376179095,
+                    y: 329.999999104975
+                },
+                point_b: Vec2D {
+                    x: 400.00633724370994,
+                    y: 251.0
+                }
+            }
+        )
+    }
     // #[test]
     // fn example_four() {
     //     let a = RigidBody2D {

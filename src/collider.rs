@@ -1,6 +1,6 @@
 use crate::linalg::Vec2D;
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 pub enum Collider {
     CircleCollider { radius: f64 },
     PolygonCollider { vertices: Vec<Vec2D> },

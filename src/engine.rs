@@ -6,9 +6,9 @@ use crate::{
     collision::{
         algorithms::{
             epa::{epa, CollisionResult},
-            gjk::{gjk_collision, gjk_distance},
+            gjk::{gjk_collision, gjk_distance}, sat::sat,
         },
-        narrow::sphere_v_sphere::{self, narrow_sphere_v_sphere},
+        manifold::ContactManifold,
     },
     linalg::Vec2D,
     render::{circle, line, polygon, rect},
@@ -61,13 +61,16 @@ impl Engine {
 
     pub fn demo_collide(width: f64, height: f64) -> Self {
         // let rectangle_collider1 = Collider::rectangle(100., 100.);
-        let circle_collider1 = Collider::circle(50.);
+        let circle_collider1 = Collider::circle(20.);
         let rectangle_collider2 = Collider::rectangle(200., 100.);
 
-        let rectangle1 =
-            // RigidBody2D::new(Vec2D::new(width / 2., height / 2.), rectangle_collider1, 1.);
+        let rectangle1 = 
+        // thing
+        // RigidBody2D::new(Vec2D::new(400., 250.), rectangle_collider1, 1.);
         RigidBody2D::new(Vec2D::new(400., 250.), circle_collider1, 1.);
-        let rectangle2 = RigidBody2D::new(Vec2D::new(439., 350.), rectangle_collider2, 1.);
+
+        
+        let rectangle2 = RigidBody2D::new(Vec2D::new(426., 301.), rectangle_collider2, 1.);
 
         // rectangle1.angle = std::f64::consts::PI;
         // rectangle1.angular_velocity = 0.3;
@@ -155,33 +158,78 @@ impl Engine {
         }
 
         if self.bodies.len() == 2 {
-            let a = &self.bodies[0];
-            let b = &self.bodies[1];
+            let a = &self.bodies[0].clone();
+            let b = &self.bodies[1].clone();
 
-            match gjk_collision(a, b) {
-                None => {
-                    if let Some((dist, alpha, beta)) = gjk_distance(a, b) {
-                        circle(&ctx, alpha, 10., "green")?;
-                        circle(&ctx, beta, 10., "green")?;
-                        let n = (beta - alpha).normalize();
-                        line(&ctx, alpha, alpha + n * dist, "green");
-                    }
-                }
-                Some(_simplex) => {
-                    // clg!("pre Epa");
-                    // let CollisionResult {
-                    //     depth,
-                    //     normal,
-                    //     point_a,
-                    //     point_b,
-                    // } = epa(simplex, a, b);
-                    // // clg!("post Epa");
+            let mut manifold = ContactManifold::new(a, b);
+            manifold.compute();
 
-                    // circle(&ctx, point_a, 10., "purple")?;
-                    // circle(&ctx, point_b, 10., "purple")?;
-                    // line(&ctx, point_a, point_a + normal * depth, "green");
+            if let Some(normal) = manifold.normal {
+                for (point, depth) in manifold.points {
+                    circle(&ctx, point, 5., "green")?;
+                    
+                    line(&ctx, point, point + normal * depth, "green");
                 }
             }
+
+
+
+            // match sat(a, b) {
+            //     Some(mtv) => {
+            //         // if let None = gjk_collision(a, b) {
+            //         //     panic!("Pas normal: a: {:#?}\nb: {:#?}",a,b);
+            //         // }
+
+            //         match gjk_collision(a, b) {
+            //             None => panic!("Pas normal: a: {:#?}\nb: {:#?}",a,b),
+            //             Some(s) => {
+            //                 let CollisionResult {
+            //                     depth,
+            //                     normal,
+            //                     point_a,
+            //                     point_b,
+            //                 } = epa(s, a, b);
+            //                 circle(&ctx, point_a, 10., "purple")?;
+            //                 circle(&ctx, point_b, 10., "purple")?;
+            //                 line(&ctx, point_a, point_a + normal * depth, "green");
+            //             }
+            //         };
+
+            //         // if (mtv_epa - mtv).near_zero() {
+            //         //    rect(&ctx, Vec2D::zero(), Vec2D::new(30.,30.), "cyan"); 
+            //         // }
+
+            //         // clg!("Hey !");
+            //         let center = Vec2D::new(self.width / 4., self.height / 4.);
+            //         line(&ctx, center, center + mtv, "green");
+            //     },
+            //     None => ()
+            // }
+
+            // match gjk_collision(a, b) {
+            //     None => {
+            //         if let Some((dist, alpha, beta)) = gjk_distance(a, b) {
+            //             circle(&ctx, alpha, 10., "green")?;
+            //             circle(&ctx, beta, 10., "green")?;
+            //             let n = (beta - alpha).normalize();
+            //             line(&ctx, alpha, alpha + n * dist, "green");
+            //         }
+            //     }
+            //     Some(simplex) => {
+            //         // clg!("pre Epa");
+            //         let CollisionResult {
+            //             depth,
+            //             normal,
+            //             point_a,
+            //             point_b,
+            //         } = epa(simplex, a, b);
+            //         // // clg!("post Epa");
+
+            //         circle(&ctx, point_a, 10., "purple")?;
+            //         circle(&ctx, point_b, 10., "purple")?;
+            //         line(&ctx, point_a, point_a + normal * depth, "green");
+            //     }
+            // }
 
             // if let Some(_) = gjk(a, b) {
             //     ctx.set_fill_style(&"purple".into());

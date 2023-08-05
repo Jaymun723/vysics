@@ -114,7 +114,7 @@ impl Simplex {
         let ab = point_b - point_a;
         let ao = -point_a;
 
-        println!("ab: {ab}, ao: {ao}");
+        // println!("ab: {ab}, ao: {ao}");
 
         if (point_a.norm() + (-point_b).norm() - ab.norm()).abs() < TOLERANCE {
             println!("Origin lies on the edge.");
@@ -137,16 +137,16 @@ impl Simplex {
 
         let mut ab_perp = triple_product(ab, ao, ab);
 
-        println!("Triple product for ab_perp: {ab_perp}");
+        // println!("Triple product for ab_perp: {ab_perp}");
         // let ab_perp = ab.to_3d().cross(
         //     ao.to_3d()
         // ).cross(ab.to_3d()).to_2d();
         if ab_perp.near_zero() {
-            println!("It's near zero !");
+            // println!("It's near zero !");
             ab_perp = Vec2D::new(ab.y, -ab.x).normalize();
         }
 
-        println!("ab_perp: {ab_perp}");
+        // println!("ab_perp: {ab_perp}");
 
         // clg!("ab: {ab}, ao: {ao}");
         // clg!("u_ab: {}, u_ao: {}", ab.normalize(), ao.normalize());
@@ -177,13 +177,13 @@ impl Simplex {
         let point_b = self.points[1].to_vec();
         let point_a = self.points[2].to_vec();
 
-        println!("point_a: {point_a}");
+        // println!("point_a: {point_a}");
 
         let ab = point_b - point_a;
         let ac = point_c - point_a;
         let ao = -point_a;
 
-        println!("ab: {ab}, ac: {ac}, ao: {ao}");
+        // println!("ab: {ab}, ac: {ac}, ao: {ao}");
 
         // let abc = ab.to_3d().cross(ac.to_3d());
 
@@ -261,13 +261,13 @@ pub fn gjk_collision(a: &RigidBody2D, b: &RigidBody2D) -> Option<Simplex> {
     }
     // let mut dir = Vec2D::new(1., -1.).normalize();
 
-    println!("Initial dir: {dir}");
+    // println!("Initial dir: {dir}");
 
     let support = CSOVertex::get(a, b, dir);
     let mut simplex = Simplex::new();
     simplex.add(support);
 
-    println!("Added {}", support.to_vec());
+    // println!("Added {}", support.to_vec());
 
     dir = -support.to_vec().normalize();
 
@@ -279,9 +279,9 @@ pub fn gjk_collision(a: &RigidBody2D, b: &RigidBody2D) -> Option<Simplex> {
     }
 
     for i in 0..GJK_ITERATIONS {
-        println!(
-            "Iteration: {i}------------------------------------------------------------------"
-        );
+        // println!(
+        // "Iteration: {i}------------------------------------------------------------------"
+        // );
         // clg!("Le simplex: {:#?}", simplex);
         // clg!("La direction: {}", dir);
         if dir.near_zero() || !dir.is_correct() {
@@ -292,7 +292,7 @@ pub fn gjk_collision(a: &RigidBody2D, b: &RigidBody2D) -> Option<Simplex> {
         }
 
         let support = CSOVertex::get(a, b, dir);
-        println!("Got support {} with direction {}", support.to_vec(), dir);
+        // println!("Got support {} with direction {}", support.to_vec(), dir);
         let point_a = support.to_vec();
 
         if point_a * dir < 0. {

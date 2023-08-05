@@ -21,6 +21,20 @@ pub struct RigidBody2D {
     pub force_generators: Vec<Box<dyn ForceGenerator>>,
 }
 
+impl Clone for RigidBody2D {
+    fn clone(&self) -> Self {
+        Self {
+            position: self.position.clone(),
+            collider: self.collider.clone(),
+            angle: self.angle.clone(),
+            angular_velocity: self.angular_velocity.clone(),
+            force_generators: vec![],
+            mass: self.mass.clone(),
+            velocity: self.velocity.clone(),
+        }
+    }
+}
+
 impl RigidBody2D {
     pub fn new(position: Vec2D, collider: Collider, mass: f64) -> Self {
         Self {
