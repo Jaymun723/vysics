@@ -37,7 +37,7 @@ impl Vec2D {
     }
 
     pub fn left(self) -> Vec2D {
-        Self::new(-self.y, self.y)
+        Self::new(-self.y, self.x)
     }
 
     pub fn right(self) -> Vec2D {

@@ -1,0 +1,49 @@
+a: RigidBody2D {
+    position: Vec2D {
+        x: 400.0,
+        y: 250.0,
+    },
+    velocity: Vec2D {
+        x: 0.0,
+        y: 0.0,
+    },
+    angle: 0.0,
+    angular_velocity: 0.0,
+    collider: CircleCollider {
+        radius: 80.0,
+    },
+    mass: 1.0,
+}
+b: RigidBody2D {
+    position: Vec2D {
+        x: 572.0,
+        y: 162.0,
+    },
+    velocity: Vec2D {
+        x: 0.0,
+        y: 0.0,
+    },
+    angle: 0.0,
+    angular_velocity: 0.0,
+    collider: PolygonCollider {
+        vertices: [
+            Vec2D {
+                x: -100.0,
+                y: -50.0,
+            },
+            Vec2D {
+                x: 100.0,
+                y: -50.0,
+            },
+            Vec2D {
+                x: 100.0,
+                y: 50.0,
+            },
+            Vec2D {
+                x: -100.0,
+                y: 50.0,
+            },
+        ],
+    },
+    mass: 1.0,
+}

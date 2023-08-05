@@ -365,7 +365,7 @@ pub fn gjk_distance(a: &RigidBody2D, b: &RigidBody2D) -> Option<(f64, Vec2D, Vec
 #[cfg(test)]
 mod tests {
     use crate::{
-        collision::algorithms::gjk::{gjk_collision, support_point, CSOVertex, Simplex},
+        collision::algorithms::gjk::{gjk_collision, CSOVertex, Simplex},
         linalg::Vec2D,
         rigidbody2d::RigidBody2D,
     };

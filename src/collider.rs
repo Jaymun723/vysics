@@ -15,9 +15,9 @@ impl Collider {
         Self::PolygonCollider {
             vertices: vec![
                 Vec2D::new(-width / 2., -height / 2.),
-                Vec2D::new(-width / 2., height / 2.),
-                Vec2D::new(width / 2., height / 2.),
                 Vec2D::new(width / 2., -height / 2.),
+                Vec2D::new(width / 2., height / 2.),
+                Vec2D::new(-width / 2., height / 2.),
             ],
         }
     }
