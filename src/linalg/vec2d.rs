@@ -36,6 +36,14 @@ impl Vec2D {
         self.x * other.y - self.y * other.x
     }
 
+    pub fn left(self) -> Vec2D {
+        Self::new(-self.y, self.y)
+    }
+
+    pub fn right(self) -> Vec2D {
+        Self::new(self.y, -self.x)
+    }
+
     pub fn to_3d(self) -> crate::linalg::Vec3D {
         crate::linalg::Vec3D {
             x: self.x,
