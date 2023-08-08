@@ -155,8 +155,10 @@ mod tests {
     use std::vec;
 
     use crate::{
-        collider::Collider::{CircleCollider, PolygonCollider},
-        collision::algorithms::{epa::CollisionResult, gjk::gjk_collision},
+        collision::{
+            algorithms::{epa::CollisionResult, gjk::gjk_collision},
+            collider::Collider::{CircleCollider, PolygonCollider},
+        },
         linalg::Vec2D,
         rigidbody2d::RigidBody2D,
     };

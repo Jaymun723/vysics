@@ -1,5 +1,5 @@
 use crate::{
-    collider::Collider::{CircleCollider, PolygonCollider},
+    collision::collider::Collider::{CircleCollider, PolygonCollider},
     linalg::Vec2D,
     rigidbody2d::RigidBody2D,
 };
@@ -196,8 +196,10 @@ pub fn sat(a: &RigidBody2D, b: &RigidBody2D) -> Option<Vec2D> {
 #[cfg(test)]
 mod test {
     use crate::{
-        collider::Collider::{self, CircleCollider, PolygonCollider},
-        collision::algorithms::sat::sat,
+        collision::{
+            algorithms::sat::sat,
+            collider::Collider::{self, CircleCollider, PolygonCollider},
+        },
         linalg::Vec2D,
         rigidbody2d::RigidBody2D,
     };

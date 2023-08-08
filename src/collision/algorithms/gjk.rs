@@ -365,7 +365,10 @@ pub fn gjk_distance(a: &RigidBody2D, b: &RigidBody2D) -> Option<(f64, Vec2D, Vec
 #[cfg(test)]
 mod tests {
     use crate::{
-        collision::algorithms::gjk::{gjk_collision, CSOVertex, Simplex},
+        collision::{
+            algorithms::gjk::{gjk_collision, CSOVertex, Simplex},
+            collider::Collider::{CircleCollider, PolygonCollider},
+        },
         linalg::Vec2D,
         rigidbody2d::RigidBody2D,
     };
@@ -417,7 +420,7 @@ mod tests {
             velocity: Vec2D { x: 0.0, y: 0.0 },
             angle: 0.0,
             angular_velocity: 0.0,
-            collider: crate::collider::Collider::CircleCollider { radius: 50.0 },
+            collider: CircleCollider { radius: 50.0 },
             mass: 1.0,
             force_generators: vec![],
         };
@@ -427,7 +430,7 @@ mod tests {
             velocity: Vec2D { x: 0.0, y: 0.0 },
             angle: 0.0,
             angular_velocity: 0.0,
-            collider: crate::collider::Collider::PolygonCollider {
+            collider: PolygonCollider {
                 vertices: vec![
                     Vec2D {
                         x: -100.0,

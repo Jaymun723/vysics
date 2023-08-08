@@ -1,8 +1,14 @@
 use derivative::Derivative;
 
-use self::force_generator::ForceGenerator;
-use crate::collider::*;
-use crate::linalg::{Mat22, Vec2D};
+// use self::force_generator::ForceGenerator;
+// use crate::collider::*;
+// use crate::linalg::{Mat22, Vec2D};
+
+use crate::{
+    collision::collider::Collider,
+    linalg::{Mat22, Vec2D},
+    rigidbody2d::force_generator::ForceGenerator,
+};
 
 pub mod force_generator;
 

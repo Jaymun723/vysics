@@ -1,5 +1,5 @@
 use crate::{
-    collider::Collider::{CircleCollider, PolygonCollider},
+    collision::collider::Collider::{CircleCollider, PolygonCollider},
     linalg::Vec2D,
     rigidbody2d::RigidBody2D,
 };

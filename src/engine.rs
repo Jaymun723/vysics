@@ -2,8 +2,8 @@ use wasm_bindgen::prelude::*;
 use web_sys::CanvasRenderingContext2d;
 
 use crate::{
-    collider::Collider::{self, CircleCollider},
     collision::{
+        collider::Collider::{self, CircleCollider,PolygonCollider},
         algorithms::
             gjk::gjk_collision
         ,
@@ -139,7 +139,7 @@ impl Engine {
                     ctx.fill();
                     ctx.stroke();
                 }
-                crate::collider::Collider::PolygonCollider { vertices } => {
+                PolygonCollider { vertices } => {
                     // let mut world_verticies = vec![];
 
                     // for vertex in vertices {

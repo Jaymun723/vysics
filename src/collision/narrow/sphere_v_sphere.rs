@@ -1,13 +1,16 @@
-use crate::{collision::manifold::ContactManifold, linalg::Vec2D};
+use crate::{
+    collision::{collider::Collider::CircleCollider, manifold::ContactManifold},
+    linalg::Vec2D,
+};
 
 pub fn sphere_v_sphere(manifold: &mut ContactManifold) {
     let radius_a = match manifold.a.collider {
-        crate::collider::Collider::CircleCollider { radius } => radius,
+        CircleCollider { radius } => radius,
         _ => panic!("Inappropriate fonction used for the narrow phase (for element a)."),
     };
 
     let radius_b = match manifold.b.collider {
-        crate::collider::Collider::CircleCollider { radius } => radius,
+        CircleCollider { radius } => radius,
         _ => panic!("Inappropriate fonction used for the narrow phase (for element b)."),
     };
 

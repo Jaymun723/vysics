@@ -1,8 +1,14 @@
-use crate::collider::Collider::{CircleCollider, PolygonCollider};
-use crate::collision::algorithms::gjk::{gjk_collision, gjk_distance};
-use crate::collision::algorithms::sat::sat;
-use crate::collision::manifold::ContactManifold;
-use crate::rigidbody2d::RigidBody2D;
+use crate::{
+    collision::{
+        algorithms::{
+            gjk::{gjk_collision, gjk_distance},
+            sat::sat,
+        },
+        collider::Collider::{CircleCollider, PolygonCollider},
+        manifold::ContactManifold,
+    },
+    rigidbody2d::RigidBody2D,
+};
 
 pub fn sphere_v_polygon(manifold: &mut ContactManifold) {
     // Ensure a is the circle and b the polygon
@@ -101,7 +107,8 @@ pub fn sphere_v_polygon(manifold: &mut ContactManifold) {
 #[cfg(test)]
 mod tests {
     use crate::{
-        collider::Collider, collision::manifold::ContactManifold, linalg::Vec2D,
+        collision::{collider::Collider, manifold::ContactManifold},
+        linalg::Vec2D,
         rigidbody2d::RigidBody2D,
     };
 

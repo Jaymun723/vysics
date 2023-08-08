@@ -1,4 +1,3 @@
-pub mod collider;
 pub mod collision;
 pub mod engine;
 pub mod linalg;

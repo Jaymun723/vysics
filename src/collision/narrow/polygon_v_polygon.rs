@@ -3,8 +3,9 @@
 // But mainly: https://github.com/dyn4j/dyn4j/blob/master/src/main/java/org/dyn4j/collision/manifold/ClippingManifoldSolver.java
 
 use crate::{
-    collider::Collider::PolygonCollider,
-    collision::{algorithms::sat::sat, manifold::ContactManifold},
+    collision::{
+        algorithms::sat::sat, collider::Collider::PolygonCollider, manifold::ContactManifold,
+    },
     linalg::Vec2D,
     rigidbody2d::RigidBody2D,
 };
@@ -253,7 +254,8 @@ pub fn polygon_v_polygon(manifold: &mut ContactManifold) {
 #[cfg(test)]
 mod tests {
     use crate::{
-        collider::Collider, collision::manifold::ContactManifold, linalg::Vec2D,
+        collision::{collider::Collider, manifold::ContactManifold},
+        linalg::Vec2D,
         rigidbody2d::RigidBody2D,
     };
 
