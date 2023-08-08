@@ -7,24 +7,20 @@ pub mod rigidbody2d;
 pub mod render;
 
 use crate::linalg::Vec2D;
-use collision::contact_point::get_contact_points;
 use engine::Engine;
-use render::{circle, line, polygon};
-use rigidbody2d::RigidBody2D;
 use std::cell::{Cell, RefCell};
-use std::f64::consts::PI;
 use std::rc::Rc;
 use wasm_bindgen::prelude::*;
 
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: &str);
-}
+// #[wasm_bindgen]
+// extern "C" {
+//     #[wasm_bindgen(js_namespace = console)]
+//     fn log(s: &str);
+// }
 
-macro_rules! clg {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-}
+// macro_rules! clg {
+//     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+// }
 
 fn window() -> web_sys::Window {
     web_sys::window().expect("no global `window` exists")

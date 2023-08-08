@@ -49,7 +49,7 @@ impl RigidBody2D {
     }
 
     pub fn from_polygon(vertices: &Vec<Vec2D>, mass: f64) -> Self {
-        let mut collider = Collider::PolygonCollider {
+        let collider = Collider::PolygonCollider {
             vertices: vertices.to_vec(),
         };
 

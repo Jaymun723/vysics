@@ -4,10 +4,9 @@ use web_sys::CanvasRenderingContext2d;
 use crate::{
     collider::Collider::{self, CircleCollider},
     collision::{
-        algorithms::{
-            epa::{epa, CollisionResult},
-            gjk::{gjk_collision, gjk_distance}, sat::sat,
-        },
+        algorithms::
+            gjk::gjk_collision
+        ,
         manifold::ContactManifold,
     },
     linalg::Vec2D,
@@ -15,15 +14,15 @@ use crate::{
     rigidbody2d::{force_generator::GravityGenerator, RigidBody2D},
 };
 
-#[wasm_bindgen]
-extern "C" {
-    #[wasm_bindgen(js_namespace = console)]
-    fn log(s: &str);
-}
+// #[wasm_bindgen]
+// extern "C" {
+//     #[wasm_bindgen(js_namespace = console)]
+//     fn log(s: &str);
+// }
 
-macro_rules! clg {
-    ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
-}
+// macro_rules! clg {
+//     ($($t:tt)*) => (log(&format_args!($($t)*).to_string()))
+// }
 
 pub struct Engine {
     pub width: f64,
@@ -60,14 +59,14 @@ impl Engine {
     }
 
     pub fn demo_collide(width: f64, height: f64) -> Self {
-        // let rectangle_collider1 = Collider::rectangle(100., 100.);
-        let circle_collider1 = Collider::circle(20.);
+        let rectangle_collider1 = Collider::rectangle(100., 100.);
+        // let circle_collider1 = Collider::circle(20.);
         let rectangle_collider2 = Collider::rectangle(200., 100.);
 
         let rectangle1 = 
         // thing
-        // RigidBody2D::new(Vec2D::new(400., 250.), rectangle_collider1, 1.);
-        RigidBody2D::new(Vec2D::new(400., 250.), circle_collider1, 1.);
+        RigidBody2D::new(Vec2D::new(400., 250.), rectangle_collider1, 1.);
+        // RigidBody2D::new(Vec2D::new(400., 250.), circle_collider1, 1.);
 
         
         let rectangle2 = RigidBody2D::new(Vec2D::new(426., 301.), rectangle_collider2, 1.);

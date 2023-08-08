@@ -98,7 +98,7 @@ pub fn epa(mut simplex: Simplex, a: &RigidBody2D, b: &RigidBody2D) -> CollisionR
 
     // clg!("Iteration 0:");
     // clg!("a: {:#?}\nb: {:#?}\nsimplex: {:#?}", a, b, simplex);
-    for i in 0..EPA_ITERATIONS {
+    for _ in 0..EPA_ITERATIONS {
         let (depth, index, normal) = closest_edge(&simplex);
         let support = CSOVertex::get(a, b, normal);
         let r = support.to_vec();

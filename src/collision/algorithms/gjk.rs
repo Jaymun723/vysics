@@ -278,7 +278,7 @@ pub fn gjk_collision(a: &RigidBody2D, b: &RigidBody2D) -> Option<Simplex> {
         );
     }
 
-    for i in 0..GJK_ITERATIONS {
+    for _ in 0..GJK_ITERATIONS {
         // println!(
         // "Iteration: {i}------------------------------------------------------------------"
         // );
