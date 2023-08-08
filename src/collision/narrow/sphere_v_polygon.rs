@@ -1,31 +1,23 @@
-use std::f64::INFINITY;
-
 use crate::collider::Collider::{CircleCollider, PolygonCollider};
-use crate::collision::algorithms::epa::{epa, CollisionResult};
 use crate::collision::algorithms::gjk::{gjk_collision, gjk_distance};
 use crate::collision::algorithms::sat::sat;
 use crate::collision::manifold::ContactManifold;
 use crate::rigidbody2d::RigidBody2D;
 
 pub fn sphere_v_polygon(manifold: &mut ContactManifold) {
-    let mut a_radius = 0.;
-    let mut b_vertices = &(vec![]);
-
     // Ensure a is the circle and b the polygon
-    match (&manifold.a.collider, &manifold.b.collider) {
-        (CircleCollider { radius }, PolygonCollider { vertices }) => {
-            a_radius = *radius;
-            b_vertices = vertices;
-        }
+    let (a_radius, b_vertices) = match (&manifold.a.collider, &manifold.b.collider) {
+        (CircleCollider { radius }, PolygonCollider { vertices }) => (*radius, vertices),
         (PolygonCollider { vertices }, CircleCollider { radius }) => {
-            a_radius = *radius;
-            b_vertices = vertices;
+            // a_radius = *radius;
+            // b_vertices = vertices;
             let tmp = manifold.a;
             manifold.a = manifold.b;
             manifold.b = tmp;
+            (*radius, vertices)
         }
         _ => panic!("Inappropriate fonction used for the narrow phase."),
-    }
+    };
 
     // Following: http://media.steampowered.com/apps/valve/2015/DirkGregorius_Contacts.pdf page 54
 
