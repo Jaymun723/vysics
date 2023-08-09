@@ -10,6 +10,6 @@ pub struct GravityGenerator {}
 
 impl ForceGenerator for GravityGenerator {
     fn compute(&self, _body: &RigidBody2D) -> (Vec2D, f64) {
-        (Vec2D { x: 0., y: 9.81 }, 0.)
+        (Vec2D { x: 0., y: 981. }, 0.)
     }
 }

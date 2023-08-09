@@ -182,6 +182,7 @@ mod tests {
             },
             mass: 1.0,
             force_generators: vec![],
+            inertia: 1.,
         };
 
         let b = RigidBody2D {
@@ -202,6 +203,7 @@ mod tests {
             },
             mass: 1.0,
             force_generators: vec![],
+            inertia: 1.,
         };
 
         println!("===== GJK =====");
@@ -244,6 +246,7 @@ mod tests {
             },
             mass: 1.0,
             force_generators: vec![],
+            inertia: 1.,
         };
 
         let b = RigidBody2D {
@@ -264,6 +267,7 @@ mod tests {
             },
             mass: 1.0,
             force_generators: vec![],
+            inertia: 1.,
         };
 
         let simplex = match gjk_collision(&a, &b) {
@@ -293,6 +297,7 @@ mod tests {
             collider: CircleCollider { radius: 80.0 },
             mass: 1.0,
             force_generators: vec![],
+            inertia: 1.,
         };
 
         let b = RigidBody2D {
@@ -313,6 +318,7 @@ mod tests {
             },
             mass: 1.0,
             force_generators: vec![],
+            inertia: 1.,
         };
 
         println!("===== GJK =====");
@@ -356,6 +362,7 @@ mod tests {
             collider: CircleCollider { radius: 80.0 },
             mass: 1.0,
             force_generators: vec![],
+            inertia: 1.,
         };
 
         let b = RigidBody2D {
@@ -376,6 +383,7 @@ mod tests {
             },
             mass: 1.0,
             force_generators: vec![],
+            inertia: 1.,
         };
 
         println!("===== GJK =====");

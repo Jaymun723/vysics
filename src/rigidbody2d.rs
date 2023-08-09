@@ -22,6 +22,8 @@ pub struct RigidBody2D {
     pub collider: Collider,
     // pub is temp
     pub mass: f64,
+    pub inertia: f64,
+
     // pub is temp
     #[derivative(Debug = "ignore")]
     pub force_generators: Vec<Box<dyn ForceGenerator>>,
@@ -37,12 +39,14 @@ impl Clone for RigidBody2D {
             force_generators: vec![],
             mass: self.mass.clone(),
             velocity: self.velocity.clone(),
+            inertia: self.inertia.clone(),
         }
     }
 }
 
 impl RigidBody2D {
     pub fn new(position: Vec2D, collider: Collider, mass: f64) -> Self {
+        let inertia = collider.get_inertia();
         Self {
             position,
             collider,
@@ -51,6 +55,7 @@ impl RigidBody2D {
             angular_velocity: 0.,
             force_generators: vec![],
             mass,
+            inertia,
         }
     }
 
@@ -58,6 +63,7 @@ impl RigidBody2D {
         let collider = Collider::PolygonCollider {
             vertices: vertices.to_vec(),
         };
+        let inertia = collider.get_inertia();
 
         // let position = collider.center();
         let position = Vec2D::zero();
@@ -74,14 +80,23 @@ impl RigidBody2D {
             angular_velocity: 0.,
             force_generators: vec![],
             mass,
+            inertia,
         }
     }
 
-    pub fn get_inv_mass(&self) -> f64 {
+    pub fn get_mass_inv(&self) -> f64 {
         if self.mass == 0. {
             0.
         } else {
             1. / self.mass
+        }
+    }
+
+    pub fn get_inertia_inv(&self) -> f64 {
+        if self.inertia == 0. {
+            0.
+        } else {
+            1. / self.inertia
         }
     }
 
@@ -100,7 +115,7 @@ impl RigidBody2D {
             torque_acc += torque;
         }
 
-        let acceleration = self.get_inv_mass() * force_acc;
+        let acceleration = self.get_mass_inv() * force_acc;
 
         self.velocity += acceleration * dt;
         self.position += self.velocity * dt;

@@ -58,4 +58,8 @@ impl Collider {
             }
         }
     }
+
+    pub fn get_inertia(&self) -> f64 {
+        1.
+    }
 }

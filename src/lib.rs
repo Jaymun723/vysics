@@ -1,4 +1,5 @@
 pub mod collision;
+pub mod constraint;
 pub mod engine;
 pub mod linalg;
 pub mod rigidbody2d;
@@ -69,7 +70,7 @@ fn run() -> Result<(), JsValue> {
     let mut date = performance.now();
     let mut accumulator = 0.;
 
-    let mut engine = Engine::demo_collide(width as f64, height as f64);
+    let mut engine = Engine::demo_circle(width as f64, height as f64);
 
     let pos = Rc::new(Cell::new(Vec2D::zero()));
     let clicked = Rc::new(Cell::new(false));
@@ -121,12 +122,12 @@ fn run() -> Result<(), JsValue> {
                 accumulator -= fixed_dt;
             }
 
-            engine.bodies[1].position = pos.get();
-            if clicked.get() {
-                engine.bodies[1].angular_velocity = 0.8;
-            } else {
-                engine.bodies[1].angular_velocity = 0.;
-            }
+            // engine.bodies[1].position = pos.get();
+            // if clicked.get() {
+            //     engine.bodies[1].angular_velocity = 0.8;
+            // } else {
+            //     engine.bodies[1].angular_velocity = 0.;
+            // }
 
             ctx.set_fill_style(&"white".into());
             ctx.fill_rect(0., 0., width as f64, height as f64);

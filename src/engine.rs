@@ -32,7 +32,7 @@ pub struct Engine {
 
 impl Engine {
     pub fn demo_circle(width: f64, height: f64) -> Self {
-        let circle_collider = CircleCollider { radius: 5. };
+        let circle_collider = CircleCollider { radius: 100. };
         let mut circle1 = RigidBody2D::new(Vec2D::new(width / 2., 0.), circle_collider, 1.);
 
         circle1.add_force_generator(Box::new(GravityGenerator {}));

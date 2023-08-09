@@ -423,6 +423,7 @@ mod tests {
             collider: CircleCollider { radius: 50.0 },
             mass: 1.0,
             force_generators: vec![],
+            inertia: 1.,
         };
 
         let b = RigidBody2D {
@@ -443,6 +444,7 @@ mod tests {
             },
             mass: 1.0,
             force_generators: vec![],
+            inertia: 1.,
         };
 
         assert_eq!(
